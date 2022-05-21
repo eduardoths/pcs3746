@@ -4,5 +4,5 @@ services:
     container_name: linux
     image: pcs3746
     volumes:
-      - ./linux/:/home/student/src/linux
+      - ../linux/:/home/student/src/linux
       - ./initramfs/:/home/student/src/initramfs
