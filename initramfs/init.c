@@ -29,6 +29,8 @@ void open_file_and_print() {
   if (fd == -1)
     fatal("Couldn't read file");
 
+  close(fd);
+
   printf("%s\n", buffer);
 }
 
