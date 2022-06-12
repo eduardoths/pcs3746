@@ -9,12 +9,9 @@ clean:
 		rm -rf build
 		find -name '*.o' -delete
 
-build/rootfs.gz: build/initramfs_root/init create_file
+build/rootfs.gz: build/initramfs_root/init
 		cd build/initramfs_root ; \
 		find -type f -print0 | cpio -0 -ov -H newc | gzip -9 > ../rootfs.gz
 
 build/initramfs_root/init: init.c
 		$(CC) -o $@ $^
-
-create_file:
-	cp text.txt build/initramfs_root/

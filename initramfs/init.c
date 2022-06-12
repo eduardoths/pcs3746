@@ -1,47 +1,52 @@
-#include "hello_world.h"
-#include <errno.h>
-#include <fcntl.h>
+#include "pid_father.h"
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
-#include <strings.h>
-#include <sys/mount.h>
-#include <sys/stat.h>
-#include <unistd.h>
 
-#define FILENAME "/text.txt"
-
-void fatal(char *message) {
-  char *prefix = "[!!] Fatal error: ";
-  strncat(prefix, message, strlen(message));
-  perror(prefix);
-  exit(-1);
+void parent() {
+  int pid = getpid();
+  while (1) {
+    printf("Hello from parent! (pid = %d)\n", pid);
+    sleep(1);
+  }
 }
 
-void open_file_and_print() {
-  int fd;
-  char *buffer;
-  fd = open(FILENAME, O_RDONLY);
-  if (fd == -1)
-    fatal("Couldn't open file");
+void child() {
+  int pid = getpid();
+  for (int i = 0; i < 5; i++) {
+    int parent_pid = pid_father(pid);
+    printf("Hello from child! (pid = %d, parent_pid = %d)\n", pid, parent_pid);
+    sleep(1);
+  }
+  printf("Child is shutting down, exiting process\n");
+  exit(0);
+}
 
-  read(fd, buffer, 1000);
-  if (fd == -1)
-    fatal("Couldn't read file");
-
-  close(fd);
-
-  printf("%s\n", buffer);
+void grandson() {
+  int pid = getpid();
+  while (1) {
+    int parent_pid = pid_father(pid);
+    printf("Hello from grandson! (pid = %d, parent_pid = %d)\n", pid,
+           parent_pid);
+    sleep(1);
+  }
 }
 
 int main() {
-  printf("Custom initramfs - Hello World syscall:\n");
-  hello_world();
-  open_file_and_print();
+  printf("Custom initramfs - pid_father syscall:\n");
+
+  while (1) {
+    if (fork() == 0) {
+      if (fork() == 0) {
+        grandson();
+      } else {
+        child();
+      }
+    } else {
+      parent();
+    }
+  }
 
   printf("Finished kernel init!\n");
-  for (;;)
-    sleep(1000);
 
   return 0;
 }
