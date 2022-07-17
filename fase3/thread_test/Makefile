@@ -1,4 +1,4 @@
-CFLAGS ?=-Wall -Wextra -static -g
+CFLAGS ?=-Wall -Wextra -pthread -g
 GCC ?=gcc $(CFLAGS)
 BINARY_FILE ?= thread_test
 
