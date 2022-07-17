@@ -49,6 +49,9 @@ int main(int argc, char *argv[]) {
   if (err != 0)
     printf("\ncan't create thread :[%s]", strerror(err));
 
+  printf("[DEBUG] thread %lu: CPU intensive thread\n", tid[0]);
+  printf("[DEBUG] thread %lu: IO intensive thread\n", tid[1]);
+
   pthread_join(tid[0], NULL);
   pthread_join(tid[1], NULL);
   pthread_mutex_destroy(&lock_completeness);
